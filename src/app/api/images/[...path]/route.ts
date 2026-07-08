@@ -31,7 +31,7 @@ export async function GET(
   if (process.env.STORAGE_PROVIDER === "bunny") {
     const buffer = await bunnyGet(`images/${segments.join("/")}`);
     if (!buffer) return NextResponse.json({ error: "Not found" }, { status: 404 });
-    return new NextResponse(buffer, {
+    return new NextResponse(new Uint8Array(buffer), {
       headers: {
         "Content-Type": MIME_TYPES[ext] ?? "application/octet-stream",
         "Cache-Control": "private, max-age=86400",
@@ -44,7 +44,7 @@ export async function GET(
 
   try {
     const buffer = await readFile(filePath);
-    return new NextResponse(buffer, {
+    return new NextResponse(new Uint8Array(buffer), {
       headers: {
         "Content-Type": MIME_TYPES[ext] ?? "application/octet-stream",
         "Cache-Control": "private, max-age=86400",

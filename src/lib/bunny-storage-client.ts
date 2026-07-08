@@ -11,7 +11,7 @@ export async function bunnyPut(path: string, buffer: Buffer): Promise<void> {
   const res = await fetch(`${endpoint}/${zone}/${path}`, {
     method: "PUT",
     headers: { AccessKey: password, "Content-Type": "application/octet-stream" },
-    body: buffer,
+    body: new Uint8Array(buffer),
   });
   if (!res.ok) {
     throw new Error(`Falha ao enviar arquivo para o Bunny Storage: ${await res.text()}`);
