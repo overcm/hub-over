@@ -51,6 +51,14 @@ export default async function StudentDetailPage({
       <div>
         <h1 className="text-2xl font-semibold">{student.name}</h1>
         <p className="text-sm text-muted-foreground">{student.email}</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Membro desde{" "}
+          {student.createdAt.toLocaleDateString("pt-BR", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          })}
+        </p>
       </div>
 
       <Card>
