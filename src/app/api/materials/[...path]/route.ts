@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { bunnyGet } from "@/lib/bunny-storage-client";
 
 const MIME_TYPES: Record<string, string> = {
   ".pdf": "application/pdf",
@@ -49,12 +50,21 @@ export async function GET(
     }
   }
 
+  const ext = path.extname(fileName).toLowerCase();
+
+  if (process.env.STORAGE_PROVIDER === "bunny") {
+    const buffer = await bunnyGet(`${lessonId}/${fileName}`);
+    if (!buffer) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return new NextResponse(buffer, {
+      headers: { "Content-Type": MIME_TYPES[ext] ?? "application/octet-stream" },
+    });
+  }
+
   const basePath = process.env.MATERIALS_LOCAL_PATH ?? "./storage/materials";
   const filePath = path.join(basePath, lessonId, fileName);
 
   try {
     const buffer = await readFile(filePath);
-    const ext = path.extname(fileName).toLowerCase();
     return new NextResponse(buffer, {
       headers: {
         "Content-Type": MIME_TYPES[ext] ?? "application/octet-stream",
