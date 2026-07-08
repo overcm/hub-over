@@ -1,0 +1,239 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  STUDENT
+}
+
+enum VideoStatus {
+  PENDING
+  UPLOADING
+  PROCESSING
+  READY
+  FAILED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(STUDENT)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  enrollments    Enrollment[]
+  notes          LessonNote[]
+  comments       LessonComment[]
+  ratings        LessonRating[]
+  progress       LessonProgress[]
+  createdCourses Course[]         @relation("CourseCreatedBy")
+  grantedEnrollments Enrollment[] @relation("EnrollmentGrantedBy")
+
+  @@map("users")
+}
+
+model Course {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  description   String?
+  coverImageUrl String?
+  coverFocalX   Float?
+  coverFocalY   Float?
+  published     Boolean  @default(false)
+  comingSoon    Boolean  @default(false)
+  createdById   String
+  createdBy     User     @relation("CourseCreatedBy", fields: [createdById], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  modules     Module[]
+  enrollments Enrollment[]
+
+  @@map("courses")
+}
+
+model Module {
+  id         String   @id @default(cuid())
+  courseId   String
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title      String
+  order      Int      @default(0)
+  comingSoon Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  lessons Lesson[]
+
+  @@index([courseId])
+  @@map("modules")
+}
+
+model Lesson {
+  id          String  @id @default(cuid())
+  moduleId    String
+  module      Module  @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  title       String
+  slug        String
+  description String? @db.Text
+  transcript  String? @db.Text
+  order       Int     @default(0)
+  published   Boolean @default(false)
+  comingSoon  Boolean @default(false)
+
+  videoProvider String?
+  videoAssetId  String?
+  videoFileName String?
+  videoStatus   VideoStatus @default(PENDING)
+  durationSec   Int?
+  thumbnailUrl  String?
+  thumbnailFocalX Float?
+  thumbnailFocalY Float?
+
+  transcriptFileUrl  String?
+  transcriptFileName String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chapters  Chapter[]
+  materials LessonMaterial[]
+  notes     LessonNote[]
+  comments  LessonComment[]
+  ratings   LessonRating[]
+  progress  LessonProgress[]
+
+  @@unique([moduleId, slug])
+  @@index([moduleId])
+  @@map("lessons")
+}
+
+model Chapter {
+  id       String @id @default(cuid())
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  title    String
+  startSec Int
+  endSec   Int?
+  order    Int    @default(0)
+
+  @@index([lessonId])
+  @@map("chapters")
+}
+
+model LessonMaterial {
+  id            String   @id @default(cuid())
+  lessonId      String
+  lesson        Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  title         String
+  fileUrl       String
+  fileType      String?
+  fileSizeBytes Int?
+  createdAt     DateTime @default(now())
+
+  @@index([lessonId])
+  @@map("lesson_materials")
+}
+
+model LessonNote {
+  id           String   @id @default(cuid())
+  lessonId     String
+  lesson       Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content      String   @db.Text
+  timestampSec Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([lessonId, userId])
+  @@map("lesson_notes")
+}
+
+model LessonComment {
+  id        String          @id @default(cuid())
+  lessonId  String
+  lesson    Lesson          @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parentId  String?
+  parent    LessonComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies   LessonComment[] @relation("CommentReplies")
+  content   String          @db.Text
+  createdAt DateTime        @default(now())
+  updatedAt DateTime         @updatedAt
+  deletedAt DateTime?
+
+  @@index([lessonId])
+  @@map("lesson_comments")
+}
+
+model LessonRating {
+  id        String   @id @default(cuid())
+  lessonId  String
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stars     Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([lessonId, userId])
+  @@map("lesson_ratings")
+}
+
+model LessonProgress {
+  id              String    @id @default(cuid())
+  lessonId        String
+  lesson          Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastPositionSec Int       @default(0)
+  watchedSeconds  Int       @default(0)
+  watchedBuckets  Int       @default(0)
+  completed       Boolean   @default(false)
+  completedAt     DateTime?
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([lessonId, userId])
+  @@map("lesson_progress")
+}
+
+model Enrollment {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId    String
+  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  grantedAt   DateTime  @default(now())
+  grantedById String?
+  grantedBy   User?     @relation("EnrollmentGrantedBy", fields: [grantedById], references: [id])
+  expiresAt   DateTime?
+
+  @@unique([userId, courseId])
+  @@map("enrollments")
+}
+
+model Settings {
+  id                   String    @id @default("singleton")
+  whatsappCommunityUrl String?
+  communityGuidelines  String?   @db.Text
+
+  googleAccountEmail  String?
+  googleAccessToken   String?   @db.Text
+  googleRefreshToken  String?   @db.Text
+  googleTokenExpiry   DateTime?
+
+  @@map("settings")
+}
