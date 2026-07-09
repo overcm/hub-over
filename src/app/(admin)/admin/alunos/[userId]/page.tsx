@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BackLink } from "@/components/layout/BackLink";
 import { grantEnrollment, revokeEnrollment, deleteStudent } from "../actions";
+import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
 
 export default async function StudentDetailPage({
   params,
@@ -134,9 +135,12 @@ export default async function StudentDetailPage({
             permanentemente. O acesso ao hub será encerrado imediatamente.
           </p>
           <form action={deleteStudent.bind(null, userId)}>
-            <Button variant="destructive" type="submit">
+            <ConfirmSubmitButton
+              variant="destructive"
+              confirmMessage={`Remover permanentemente o aluno "${student.name}"? Isso encerra o acesso dele ao hub e apaga suas matrículas, anotações, comentários e progresso.`}
+            >
               Remover aluno
-            </Button>
+            </ConfirmSubmitButton>
           </form>
         </CardContent>
       </Card>

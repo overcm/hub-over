@@ -150,6 +150,7 @@ export function VideoUploadForm({
   }
 
   async function handleDelete() {
+    if (!confirm("Remover permanentemente este vídeo? Essa ação não pode ser desfeita.")) return;
     setIsDeleting(true);
     await fetch(`/api/admin/lessons/${lessonId}/video`, { method: "DELETE" });
     setStatus("PENDING");

@@ -22,6 +22,7 @@ import {
 } from "../actions";
 import { BackLink } from "@/components/layout/BackLink";
 import { ImageUploadForm } from "@/components/admin/ImageUploadForm";
+import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
 
 export default async function CourseDetailPage({
   params,
@@ -131,9 +132,13 @@ export default async function CourseDetailPage({
                 </Button>
               </form>
               <form action={deleteModule.bind(null, course.id, module.id)}>
-                <Button variant="ghost" size="sm" type="submit">
+                <ConfirmSubmitButton
+                  variant="ghost"
+                  size="sm"
+                  confirmMessage={`Remover o módulo "${module.title}"? Isso apaga permanentemente suas aulas, vídeos e materiais.`}
+                >
                   Remover módulo
-                </Button>
+                </ConfirmSubmitButton>
               </form>
             </div>
           </CardHeader>
@@ -212,9 +217,12 @@ export default async function CourseDetailPage({
             Essa ação remove o conteúdo, todos os módulos, aulas, vídeos e materiais permanentemente.
           </p>
           <form action={deleteCourse.bind(null, course.id)}>
-            <Button variant="destructive" type="submit">
+            <ConfirmSubmitButton
+              variant="destructive"
+              confirmMessage={`Excluir permanentemente o conteúdo "${course.title}"? Isso remove todos os módulos, aulas, vídeos e materiais. Essa ação não pode ser desfeita.`}
+            >
               Excluir conteúdo
-            </Button>
+            </ConfirmSubmitButton>
           </form>
         </CardContent>
       </Card>

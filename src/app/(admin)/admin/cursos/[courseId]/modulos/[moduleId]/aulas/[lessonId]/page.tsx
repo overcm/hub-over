@@ -18,6 +18,7 @@ import { VideoUploadForm } from "@/components/admin/VideoUploadForm";
 import { MaterialUploadForm } from "@/components/admin/MaterialUploadForm";
 import { ImageUploadForm } from "@/components/admin/ImageUploadForm";
 import { Linkify } from "@/components/lesson/Linkify";
+import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
 import { formatDuration as formatSeconds } from "@/lib/utils";
 import { BackLink } from "@/components/layout/BackLink";
 
@@ -120,9 +121,13 @@ export default async function LessonEditPage({
                       <p className="text-sm font-medium">{material.title}</p>
                     )}
                     <form action={deleteMaterial.bind(null, material.id)}>
-                      <Button variant="ghost" size="sm" type="submit">
+                      <ConfirmSubmitButton
+                        variant="ghost"
+                        size="sm"
+                        confirmMessage={`Remover o material "${material.title}"? Essa ação não pode ser desfeita.`}
+                      >
                         Remover
-                      </Button>
+                      </ConfirmSubmitButton>
                     </form>
                   </div>
                   {material.content && (
@@ -161,9 +166,13 @@ export default async function LessonEditPage({
                 {chapter.endSec ? ` – ${formatSeconds(chapter.endSec)}` : ""} — {chapter.title}
               </span>
               <form action={deleteChapter.bind(null, chapter.id)}>
-                <Button variant="ghost" size="sm" type="submit">
+                <ConfirmSubmitButton
+                  variant="ghost"
+                  size="sm"
+                  confirmMessage={`Remover o capítulo "${chapter.title}"?`}
+                >
                   Remover
-                </Button>
+                </ConfirmSubmitButton>
               </form>
             </div>
           ))}
@@ -224,9 +233,12 @@ export default async function LessonEditPage({
             Essa ação remove a aula, o vídeo, os materiais e os capítulos permanentemente.
           </p>
           <form action={deleteLesson.bind(null, courseId, moduleId, lessonId)}>
-            <Button variant="destructive" type="submit">
+            <ConfirmSubmitButton
+              variant="destructive"
+              confirmMessage={`Excluir permanentemente a aula "${lesson.title}"? Isso remove o vídeo, os materiais e os capítulos. Essa ação não pode ser desfeita.`}
+            >
               Excluir aula
-            </Button>
+            </ConfirmSubmitButton>
           </form>
         </CardContent>
       </Card>
