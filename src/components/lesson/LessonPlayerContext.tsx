@@ -63,7 +63,7 @@ export function LessonPlayerSection({
           />
         </div>
         {chapters.length > 0 && (
-          <div className="rounded-lg border p-2">
+          <div className="self-start rounded-lg border p-2 lg:sticky lg:top-4">
             <p className="mb-2 px-1 text-sm font-medium">Capítulos</p>
             <ChapterList chapters={chapters} currentTime={currentTime} onSelect={seekTo} />
           </div>

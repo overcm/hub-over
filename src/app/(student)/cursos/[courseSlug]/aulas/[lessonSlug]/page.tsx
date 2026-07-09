@@ -127,8 +127,6 @@ export default async function StudentLessonPage({
       <LessonTabs
         lessonId={lesson.id}
         description={lesson.description}
-        transcriptFileUrl={lesson.transcriptFileUrl}
-        transcriptFileName={lesson.transcriptFileName}
         materials={lesson.materials}
       />
     </div>

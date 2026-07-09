@@ -16,7 +16,6 @@ import {
 import { VideoUploadForm } from "@/components/admin/VideoUploadForm";
 import { MaterialUploadForm } from "@/components/admin/MaterialUploadForm";
 import { ImageUploadForm } from "@/components/admin/ImageUploadForm";
-import { TranscriptUploadForm } from "@/components/admin/TranscriptUploadForm";
 import { formatDuration as formatSeconds } from "@/lib/utils";
 import { BackLink } from "@/components/layout/BackLink";
 
@@ -64,15 +63,6 @@ export default async function LessonEditPage({
               />
             </div>
           </form>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Transcrição</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <TranscriptUploadForm lessonId={lesson.id} currentFileName={lesson.transcriptFileName} />
         </CardContent>
       </Card>
 
