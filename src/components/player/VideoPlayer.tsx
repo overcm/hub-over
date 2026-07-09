@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Play, Pause, Maximize, Minimize, RotateCcw, RotateCw } from "lucide-react";
+import { Play, Pause, Maximize, Minimize, RotateCcw, RotateCw, Volume2, Volume1, VolumeX } from "lucide-react";
 import { ChapterMarkers } from "./ChapterMarkers";
 import { cn, formatDuration } from "@/lib/utils";
 
@@ -46,6 +46,8 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(funct
   const [duration, setDuration] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [controlsVisible, setControlsVisible] = useState(true);
+  const [volume, setVolume] = useState(1);
+  const [muted, setMuted] = useState(false);
 
   useImperativeHandle(ref, () => ({
     seekTo: (seconds: number) => {
@@ -104,6 +106,20 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(funct
     };
   }, []);
 
+  useEffect(() => {
+    const stored = localStorage.getItem("hub-video-volume");
+    if (stored !== null) setVolume(Number(stored));
+    const storedMuted = localStorage.getItem("hub-video-muted");
+    if (storedMuted !== null) setMuted(storedMuted === "true");
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.volume = volume;
+    video.muted = muted;
+  }, [volume, muted]);
+
   function scheduleHide() {
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     hideTimerRef.current = setTimeout(() => {
@@ -155,6 +171,20 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(funct
     const rect = e.currentTarget.getBoundingClientRect();
     const ratio = (e.clientX - rect.left) / rect.width;
     video.currentTime = ratio * duration;
+  }
+
+  function handleVolumeChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = Number(e.target.value);
+    setVolume(value);
+    setMuted(value === 0);
+    localStorage.setItem("hub-video-volume", String(value));
+    localStorage.setItem("hub-video-muted", String(value === 0));
+  }
+
+  function toggleMute() {
+    const next = !muted;
+    setMuted(next);
+    localStorage.setItem("hub-video-muted", String(next));
   }
 
   function handleFullscreen() {
@@ -215,13 +245,33 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(funct
           <span className="text-xs tabular-nums">
             {formatDuration(currentTime)} / {formatDuration(duration)}
           </span>
-          <button
-            className="ml-auto"
-            onClick={handleFullscreen}
-            aria-label={isFullscreen ? "Minimizar" : "Tela cheia"}
-          >
-            {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
-          </button>
+          <div className="ml-auto flex items-center gap-2">
+            <button onClick={toggleMute} aria-label={muted || volume === 0 ? "Ativar som" : "Silenciar"}>
+              {muted || volume === 0 ? (
+                <VolumeX size={18} />
+              ) : volume < 0.5 ? (
+                <Volume1 size={18} />
+              ) : (
+                <Volume2 size={18} />
+              )}
+            </button>
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.05}
+              value={muted ? 0 : volume}
+              onChange={handleVolumeChange}
+              aria-label="Volume"
+              className="h-1 w-16 accent-white"
+            />
+            <button
+              onClick={handleFullscreen}
+              aria-label={isFullscreen ? "Minimizar" : "Tela cheia"}
+            >
+              {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
+            </button>
+          </div>
         </div>
       </div>
     </div>

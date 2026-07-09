@@ -128,6 +128,8 @@ export default async function StudentLessonPage({
         lessonId={lesson.id}
         description={lesson.description}
         materials={lesson.materials}
+        currentUserId={user.id}
+        isAdmin={user.role === "ADMIN"}
       />
     </div>
   );

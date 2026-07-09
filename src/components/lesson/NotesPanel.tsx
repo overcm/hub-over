@@ -18,11 +18,12 @@ function formatTime(seconds: number) {
 }
 
 export function NotesPanel({ lessonId }: { lessonId: string }) {
-  const { seekTo, currentTime } = useLessonPlayer();
+  const { seekTo } = useLessonPlayer();
   const [notes, setNotes] = useState<Note[]>([]);
   const [content, setContent] = useState("");
-  const [attachTimestamp, setAttachTimestamp] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editContent, setEditContent] = useState("");
 
   useEffect(() => {
     fetch(`/api/lessons/${lessonId}/notes`)
@@ -38,15 +39,40 @@ export function NotesPanel({ lessonId }: { lessonId: string }) {
     const res = await fetch(`/api/lessons/${lessonId}/notes`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        content,
-        timestampSec: attachTimestamp ? Math.floor(currentTime) : undefined,
-      }),
+      body: JSON.stringify({ content }),
     });
     const data = await res.json();
     setNotes((prev) => [...prev, data.note]);
     setContent("");
     setIsSaving(false);
+  }
+
+  function startEdit(note: Note) {
+    setEditingId(note.id);
+    setEditContent(note.content);
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setEditContent("");
+  }
+
+  async function saveEdit(noteId: string) {
+    if (!editContent.trim()) return;
+    const res = await fetch(`/api/lessons/${lessonId}/notes/${noteId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: editContent }),
+    });
+    const data = await res.json();
+    setNotes((prev) => prev.map((n) => (n.id === noteId ? data.note : n)));
+    cancelEdit();
+  }
+
+  async function deleteNote(noteId: string) {
+    if (!confirm("Excluir esta anotação?")) return;
+    await fetch(`/api/lessons/${lessonId}/notes/${noteId}`, { method: "DELETE" });
+    setNotes((prev) => prev.filter((n) => n.id !== noteId));
   }
 
   return (
@@ -58,15 +84,7 @@ export function NotesPanel({ lessonId }: { lessonId: string }) {
           placeholder="Escreva uma anotação..."
           rows={3}
         />
-        <div className="flex items-center justify-between">
-          <label className="flex items-center gap-2 text-sm text-muted-foreground">
-            <input
-              type="checkbox"
-              checked={attachTimestamp}
-              onChange={(e) => setAttachTimestamp(e.target.checked)}
-            />
-            Vincular ao momento atual ({formatTime(currentTime)})
-          </label>
+        <div className="flex justify-end">
           <Button type="submit" size="sm" disabled={isSaving}>
             Salvar
           </Button>
@@ -74,21 +92,51 @@ export function NotesPanel({ lessonId }: { lessonId: string }) {
       </form>
 
       <div className="space-y-2">
-        {notes.map((note) => (
-          <div key={note.id} className="rounded-md border p-2">
-            <div className="flex items-center gap-2">
+        {notes.map((note) =>
+          editingId === note.id ? (
+            <div key={note.id} className="space-y-2 rounded-md border p-2">
+              <Textarea
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+                rows={3}
+              />
+              <div className="flex justify-end gap-2">
+                <Button type="button" variant="ghost" size="sm" onClick={cancelEdit}>
+                  Cancelar
+                </Button>
+                <Button type="button" size="sm" onClick={() => saveEdit(note.id)}>
+                  Salvar
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div key={note.id} className="rounded-md border p-2">
               {note.timestampSec != null && (
                 <button
                   onClick={() => seekTo(note.timestampSec!)}
-                  className="text-xs font-medium text-primary hover:underline"
+                  className="mb-1 text-xs font-medium text-primary hover:underline"
                 >
                   {formatTime(note.timestampSec)}
                 </button>
               )}
+              <p className="text-sm whitespace-pre-wrap">{note.content}</p>
+              <div className="mt-1 flex justify-end gap-3">
+                <button
+                  onClick={() => startEdit(note)}
+                  className="text-xs text-muted-foreground hover:underline"
+                >
+                  Editar
+                </button>
+                <button
+                  onClick={() => deleteNote(note.id)}
+                  className="text-xs text-destructive hover:underline"
+                >
+                  Excluir
+                </button>
+              </div>
             </div>
-            <p className="text-sm">{note.content}</p>
-          </div>
-        ))}
+          ),
+        )}
       </div>
     </div>
   );
