@@ -17,6 +17,7 @@ import {
 import { VideoUploadForm } from "@/components/admin/VideoUploadForm";
 import { MaterialUploadForm } from "@/components/admin/MaterialUploadForm";
 import { ImageUploadForm } from "@/components/admin/ImageUploadForm";
+import { Linkify } from "@/components/lesson/Linkify";
 import { formatDuration as formatSeconds } from "@/lib/utils";
 import { BackLink } from "@/components/layout/BackLink";
 
@@ -125,9 +126,10 @@ export default async function LessonEditPage({
                     </form>
                   </div>
                   {material.content && (
-                    <p className="mt-1 whitespace-pre-wrap text-sm text-muted-foreground">
-                      {material.content}
-                    </p>
+                    <Linkify
+                      text={material.content}
+                      className="mt-1 whitespace-pre-wrap text-sm text-muted-foreground"
+                    />
                   )}
                 </li>
               ))}

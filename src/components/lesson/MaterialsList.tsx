@@ -1,3 +1,5 @@
+import { Linkify } from "./Linkify";
+
 interface Material {
   id: string;
   title: string;
@@ -26,7 +28,10 @@ export function MaterialsList({ materials }: { materials: Material[] }) {
           ) : (
             <div className="rounded-md border p-3">
               <p className="text-sm font-medium">{material.title}</p>
-              <p className="mt-1 whitespace-pre-wrap text-sm text-muted-foreground">{material.content}</p>
+              <Linkify
+                text={material.content ?? ""}
+                className="mt-1 whitespace-pre-wrap text-sm text-muted-foreground"
+              />
             </div>
           )}
         </li>
