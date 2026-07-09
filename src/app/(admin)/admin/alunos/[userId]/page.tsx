@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BackLink } from "@/components/layout/BackLink";
-import { grantEnrollment, revokeEnrollment } from "../actions";
+import { grantEnrollment, revokeEnrollment, deleteStudent } from "../actions";
 
 export default async function StudentDetailPage({
   params,
@@ -123,6 +123,23 @@ export default async function StudentDetailPage({
           </CardContent>
         </Card>
       )}
+
+      <Card className="border-destructive/30">
+        <CardHeader>
+          <CardTitle className="text-base text-destructive">Remover aluno</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="mb-3 text-sm text-muted-foreground">
+            Essa ação remove o aluno, suas matrículas, anotações, comentários e progresso
+            permanentemente. O acesso ao hub será encerrado imediatamente.
+          </p>
+          <form action={deleteStudent.bind(null, userId)}>
+            <Button variant="destructive" type="submit">
+              Remover aluno
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

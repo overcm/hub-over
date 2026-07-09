@@ -70,3 +70,15 @@ export async function revokeEnrollment(userId: string, courseId: string) {
   await prisma.enrollment.delete({ where: { userId_courseId: { userId, courseId } } });
   revalidatePath(`/admin/alunos/${userId}`);
 }
+
+export async function deleteStudent(userId: string) {
+  await requireAdmin();
+
+  const student = await prisma.user.findUnique({ where: { id: userId } });
+  if (!student || student.role !== "STUDENT") return;
+
+  await prisma.user.delete({ where: { id: userId } });
+
+  revalidatePath("/admin/alunos");
+  redirect("/admin/alunos");
+}
