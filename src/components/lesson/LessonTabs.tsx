@@ -6,7 +6,7 @@ import { CommentsThread } from "./CommentsThread";
 interface LessonTabsProps {
   lessonId: string;
   description: string | null;
-  materials: { id: string; title: string; fileUrl: string }[];
+  materials: { id: string; title: string; fileUrl: string | null; content: string | null }[];
 }
 
 const triggerClassName = "w-full";

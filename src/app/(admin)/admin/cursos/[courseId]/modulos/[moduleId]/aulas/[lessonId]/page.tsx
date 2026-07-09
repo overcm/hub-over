@@ -11,6 +11,7 @@ import {
   createChapter,
   deleteChapter,
   deleteMaterial,
+  createMaterialNote,
   toggleComingSoonLesson,
 } from "../../../../../actions";
 import { VideoUploadForm } from "@/components/admin/VideoUploadForm";
@@ -104,24 +105,45 @@ export default async function LessonEditPage({
           ) : (
             <ul className="space-y-2">
               {lesson.materials.map((material) => (
-                <li
-                  key={material.id}
-                  className="flex items-center justify-between rounded-md border p-2"
-                >
-                  <a href={material.fileUrl} target="_blank" className="truncate text-sm hover:underline">
-                    {material.title}
-                  </a>
-                  <form action={deleteMaterial.bind(null, material.id)}>
-                    <Button variant="ghost" size="sm" type="submit">
-                      Remover
-                    </Button>
-                  </form>
+                <li key={material.id} className="rounded-md border p-2">
+                  <div className="flex items-start justify-between gap-2">
+                    {material.fileUrl ? (
+                      <a
+                        href={material.fileUrl}
+                        target="_blank"
+                        className="truncate text-sm hover:underline"
+                      >
+                        {material.title}
+                      </a>
+                    ) : (
+                      <p className="text-sm font-medium">{material.title}</p>
+                    )}
+                    <form action={deleteMaterial.bind(null, material.id)}>
+                      <Button variant="ghost" size="sm" type="submit">
+                        Remover
+                      </Button>
+                    </form>
+                  </div>
+                  {material.content && (
+                    <p className="mt-1 whitespace-pre-wrap text-sm text-muted-foreground">
+                      {material.content}
+                    </p>
+                  )}
                 </li>
               ))}
             </ul>
           )}
 
           <MaterialUploadForm lessonId={lessonId} />
+
+          <form action={createMaterialNote.bind(null, lessonId)} className="space-y-2 border-t pt-3">
+            <p className="text-xs text-muted-foreground">Ou adicione uma anotação em texto (ex: resumo da reunião):</p>
+            <Input name="title" placeholder="Título da anotação" required />
+            <Textarea name="content" placeholder="Escreva os detalhes aqui..." rows={4} required />
+            <Button type="submit" variant="outline" className="w-full">
+              Adicionar anotação
+            </Button>
+          </form>
         </CardContent>
       </Card>
 

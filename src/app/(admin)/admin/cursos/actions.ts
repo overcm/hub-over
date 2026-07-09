@@ -86,7 +86,9 @@ export async function deleteCourse(courseId: string) {
         const provider = getVideoProvider(lesson.videoProvider);
         await provider.deleteVideo(lesson.videoAssetId).catch(() => {});
       }
-      await Promise.all(lesson.materials.map((m) => storage.delete(m.fileUrl)));
+      await Promise.all(
+        lesson.materials.filter((m) => m.fileUrl).map((m) => storage.delete(m.fileUrl!)),
+      );
     }),
   );
 
@@ -212,7 +214,9 @@ export async function deleteLesson(courseId: string, moduleId: string, lessonId:
   }
 
   const storage = getStorageProvider();
-  await Promise.all(lesson?.materials.map((m) => storage.delete(m.fileUrl)) ?? []);
+  await Promise.all(
+    lesson?.materials.filter((m) => m.fileUrl).map((m) => storage.delete(m.fileUrl!)) ?? [],
+  );
 
   await prisma.lesson.delete({ where: { id: lessonId } });
   redirect(`/admin/cursos/${courseId}`);
@@ -258,9 +262,25 @@ export async function deleteMaterial(materialId: string) {
   const material = await prisma.lessonMaterial.findUnique({ where: { id: materialId } });
   if (!material) return;
 
-  const storage = getStorageProvider();
-  await storage.delete(material.fileUrl);
+  if (material.fileUrl) {
+    const storage = getStorageProvider();
+    await storage.delete(material.fileUrl);
+  }
   await prisma.lessonMaterial.delete({ where: { id: materialId } });
+
+  revalidatePath(`/admin`, "layout");
+}
+
+export async function createMaterialNote(lessonId: string, formData: FormData) {
+  await requireAdmin();
+
+  const title = (formData.get("title") as string)?.trim();
+  const content = (formData.get("content") as string)?.trim();
+  if (!title || !content) return;
+
+  await prisma.lessonMaterial.create({
+    data: { lessonId, title, content },
+  });
 
   revalidatePath(`/admin`, "layout");
 }
