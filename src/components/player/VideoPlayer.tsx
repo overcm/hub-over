@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Play, Pause, Maximize, Minimize, RotateCcw, RotateCw, Volume2, Volume1, VolumeX } from "lucide-react";
+import { Play, Pause, Maximize, Minimize, RotateCcw, RotateCw, Volume2, Volume1, VolumeX, Gauge } from "lucide-react";
 import { ChapterMarkers } from "./ChapterMarkers";
 import { cn, formatDuration } from "@/lib/utils";
 
@@ -33,6 +33,7 @@ interface VideoPlayerProps {
 }
 
 const CONTROLS_HIDE_DELAY = 2500;
+const PLAYBACK_SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 
 export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(function VideoPlayer(
   { src, type, poster, chapters, initialPositionSec, heatmap, onTimeUpdate },
@@ -48,6 +49,9 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(funct
   const [controlsVisible, setControlsVisible] = useState(true);
   const [volume, setVolume] = useState(1);
   const [muted, setMuted] = useState(false);
+  const [playbackRate, setPlaybackRate] = useState(1);
+  const [speedMenuOpen, setSpeedMenuOpen] = useState(false);
+  const speedMenuRef = useRef<HTMLDivElement>(null);
 
   useImperativeHandle(ref, () => ({
     seekTo: (seconds: number) => {
@@ -84,13 +88,15 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(funct
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !initialPositionSec) return;
+    if (!video) return;
     const handleLoaded = () => {
-      video.currentTime = initialPositionSec;
+      if (initialPositionSec) video.currentTime = initialPositionSec;
+      video.playbackRate = playbackRate;
     };
     video.addEventListener("loadedmetadata", handleLoaded);
     return () => video.removeEventListener("loadedmetadata", handleLoaded);
-  }, [initialPositionSec]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialPositionSec, src]);
 
   useEffect(() => {
     function handleFullscreenChange() {
@@ -111,6 +117,8 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(funct
     if (stored !== null) setVolume(Number(stored));
     const storedMuted = localStorage.getItem("hub-video-muted");
     if (storedMuted !== null) setMuted(storedMuted === "true");
+    const storedRate = localStorage.getItem("hub-video-rate");
+    if (storedRate !== null) setPlaybackRate(Number(storedRate));
   }, []);
 
   useEffect(() => {
@@ -119,6 +127,23 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(funct
     video.volume = volume;
     video.muted = muted;
   }, [volume, muted]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.playbackRate = playbackRate;
+  }, [playbackRate]);
+
+  useEffect(() => {
+    if (!speedMenuOpen) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (speedMenuRef.current && !speedMenuRef.current.contains(e.target as Node)) {
+        setSpeedMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [speedMenuOpen]);
 
   function scheduleHide() {
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
@@ -179,6 +204,12 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(funct
     setMuted(value === 0);
     localStorage.setItem("hub-video-volume", String(value));
     localStorage.setItem("hub-video-muted", String(value === 0));
+  }
+
+  function handleSpeedSelect(speed: number) {
+    setPlaybackRate(speed);
+    localStorage.setItem("hub-video-rate", String(speed));
+    setSpeedMenuOpen(false);
   }
 
   function toggleMute() {
@@ -246,6 +277,32 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(funct
             {formatDuration(currentTime)} / {formatDuration(duration)}
           </span>
           <div className="ml-auto flex items-center gap-2">
+            <div ref={speedMenuRef} className="relative">
+              <button
+                onClick={() => setSpeedMenuOpen((v) => !v)}
+                aria-label="Velocidade de reprodução"
+                className="flex items-center gap-1 text-xs tabular-nums"
+              >
+                <Gauge size={16} />
+                {playbackRate}x
+              </button>
+              {speedMenuOpen && (
+                <div className="absolute bottom-full right-0 mb-2 flex flex-col overflow-hidden rounded-md bg-black/90 text-xs">
+                  {PLAYBACK_SPEEDS.map((speed) => (
+                    <button
+                      key={speed}
+                      onClick={() => handleSpeedSelect(speed)}
+                      className={cn(
+                        "px-3 py-1.5 text-left hover:bg-white/10",
+                        speed === playbackRate && "font-semibold text-primary",
+                      )}
+                    >
+                      {speed}x
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             <button onClick={toggleMute} aria-label={muted || volume === 0 ? "Ativar som" : "Silenciar"}>
               {muted || volume === 0 ? (
                 <VolumeX size={18} />
