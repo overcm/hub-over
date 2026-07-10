@@ -38,7 +38,7 @@ export function LessonTabs({
       </TabsList>
 
       <TabsContent value="descricao">
-        <p className="text-sm leading-relaxed">
+        <p className="text-sm leading-relaxed whitespace-pre-wrap">
           {description || "Sem descrição para esta aula."}
         </p>
       </TabsContent>
