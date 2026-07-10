@@ -303,25 +303,27 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(funct
                 </div>
               )}
             </div>
-            <button onClick={toggleMute} aria-label={muted || volume === 0 ? "Ativar som" : "Silenciar"}>
-              {muted || volume === 0 ? (
-                <VolumeX size={18} />
-              ) : volume < 0.5 ? (
-                <Volume1 size={18} />
-              ) : (
-                <Volume2 size={18} />
-              )}
-            </button>
-            <input
-              type="range"
-              min={0}
-              max={1}
-              step={0.05}
-              value={muted ? 0 : volume}
-              onChange={handleVolumeChange}
-              aria-label="Volume"
-              className="h-1 w-16 accent-white"
-            />
+            <div className="group/volume flex items-center">
+              <button onClick={toggleMute} aria-label={muted || volume === 0 ? "Ativar som" : "Silenciar"}>
+                {muted || volume === 0 ? (
+                  <VolumeX size={18} />
+                ) : volume < 0.5 ? (
+                  <Volume1 size={18} />
+                ) : (
+                  <Volume2 size={18} />
+                )}
+              </button>
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.05}
+                value={muted ? 0 : volume}
+                onChange={handleVolumeChange}
+                aria-label="Volume"
+                className="h-1 w-0 overflow-hidden opacity-0 transition-all duration-150 accent-white group-hover/volume:ml-2 group-hover/volume:w-16 group-hover/volume:opacity-100"
+              />
+            </div>
             <button
               onClick={handleFullscreen}
               aria-label={isFullscreen ? "Minimizar" : "Tela cheia"}
