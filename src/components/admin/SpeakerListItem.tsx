@@ -11,9 +11,9 @@ import { updateSpeaker, moveSpeaker, deleteSpeaker } from "@/app/(admin)/admin/m
 type SpeakerStatus = "RADAR" | "CONTACTED" | "SCHEDULED" | "DONE";
 
 const COLUMNS: { status: SpeakerStatus; label: string }[] = [
+  { status: "SCHEDULED", label: "Marcado" },
   { status: "RADAR", label: "No radar" },
   { status: "CONTACTED", label: "Conversei / tenho orçamento" },
-  { status: "SCHEDULED", label: "Marcado" },
   { status: "DONE", label: "Já deu a mentoria" },
 ];
 
