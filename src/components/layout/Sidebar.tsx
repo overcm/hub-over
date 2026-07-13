@@ -6,6 +6,7 @@ import type { LucideIcon } from "lucide-react";
 import { signOutAction } from "@/app/actions";
 import { Logo } from "./Logo";
 import { SidebarNavLink } from "./SidebarNavLink";
+import { ThemeToggle } from "./ThemeToggle";
 
 export interface SidebarNavItem {
   href: string;
@@ -101,6 +102,7 @@ function SidebarFooter({ userName, initial }: { userName: string; initial: strin
         </span>
         <p className="truncate text-sm text-white/80">{userName}</p>
       </div>
+      <ThemeToggle />
       <form action={signOutAction}>
         <button
           type="submit"
