@@ -1,11 +1,9 @@
 import { Search } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SpeakerListItem } from "@/components/admin/SpeakerListItem";
-import { createSpeaker } from "./actions";
+import { AddSpeakerButton } from "@/components/admin/AddSpeakerButton";
 
 type SpeakerStatus = "RADAR" | "CONTACTED" | "SCHEDULED" | "DONE";
 
@@ -35,12 +33,15 @@ export default async function AdminSpeakersPage({
 
   return (
     <div className="max-w-2xl space-y-6">
-      <div>
-        <p className="text-xs font-semibold tracking-widest text-primary uppercase">Mentores</p>
-        <h1 className="mt-1 text-3xl font-semibold tracking-tight">Prospecção de mentores</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Clique no nome de uma pessoa para ver e editar preço, temas, case e mover entre etapas.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-semibold tracking-widest text-primary uppercase">Mentores</p>
+          <h1 className="mt-1 text-3xl font-semibold tracking-tight">Prospecção de mentores</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Clique no nome de uma pessoa para ver e editar preço, temas, case e mover entre etapas.
+          </p>
+        </div>
+        <AddSpeakerButton />
       </div>
 
       <form className="relative">
@@ -70,34 +71,6 @@ export default async function AdminSpeakersPage({
           </CardContent>
         </Card>
       ))}
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Adicionar pessoa</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form action={createSpeaker} className="space-y-2">
-            <Input name="name" placeholder="Nome" required />
-            <select
-              name="status"
-              defaultValue="RADAR"
-              className="flex h-8 w-full rounded-md border border-input bg-background px-3 text-sm"
-            >
-              {COLUMNS.map((column) => (
-                <option key={column.status} value={column.status}>
-                  {column.label}
-                </option>
-              ))}
-            </select>
-            <Input name="price" placeholder="Preço (ex: R$ 500)" />
-            <Textarea name="topics" placeholder="Quais temas vai falar" rows={2} />
-            <Textarea name="caseSummary" placeholder="Case / experiência" rows={2} />
-            <Button type="submit" className="w-full">
-              Adicionar
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
     </div>
   );
 }
