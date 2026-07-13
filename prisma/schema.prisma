@@ -23,6 +23,13 @@ enum VideoStatus {
   FAILED
 }
 
+enum SpeakerStatus {
+  RADAR
+  CONTACTED
+  SCHEDULED
+  DONE
+}
+
 model User {
   id           String   @id @default(cuid())
   name         String
@@ -224,6 +231,21 @@ model Enrollment {
 
   @@unique([userId, courseId])
   @@map("enrollments")
+}
+
+model GuestSpeaker {
+  id          String        @id @default(cuid())
+  name        String
+  price       String?
+  topics      String?       @db.Text
+  caseSummary String?       @db.Text
+  status      SpeakerStatus @default(RADAR)
+  order       Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([status])
+  @@map("guest_speakers")
 }
 
 model Settings {
