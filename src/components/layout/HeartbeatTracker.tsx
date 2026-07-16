@@ -1,27 +1,26 @@
 "use client";
 
-import { useEffect, useTransition } from "react";
-import { pingHeartbeat } from "@/app/(student)/heartbeat-actions";
+import { useEffect } from "react";
 
 const HEARTBEAT_INTERVAL_MS = 2 * 60 * 1000;
 
 export function HeartbeatTracker() {
-  const [, startTransition] = useTransition();
-
   useEffect(() => {
-    const send = () => startTransition(() => { pingHeartbeat(); });
+    const send = () => {
+      fetch("/api/heartbeat", { method: "POST" });
+    };
 
-    const pingIfVisible = () => {
+    const sendIfVisible = () => {
       if (document.visibilityState === "visible") send();
     };
 
     send();
-    const interval = setInterval(pingIfVisible, HEARTBEAT_INTERVAL_MS);
-    document.addEventListener("visibilitychange", pingIfVisible);
+    const interval = setInterval(sendIfVisible, HEARTBEAT_INTERVAL_MS);
+    document.addEventListener("visibilitychange", sendIfVisible);
 
     return () => {
       clearInterval(interval);
-      document.removeEventListener("visibilitychange", pingIfVisible);
+      document.removeEventListener("visibilitychange", sendIfVisible);
     };
   }, []);
 

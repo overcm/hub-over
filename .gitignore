@@ -45,3 +45,6 @@ next-env.d.ts
 
 # uploads locais (vídeos, materiais)
 /storage/
+
+.vercel
+.env*

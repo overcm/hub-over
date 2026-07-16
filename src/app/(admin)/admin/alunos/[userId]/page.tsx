@@ -9,6 +9,7 @@ import { formatLoginDuration } from "@/lib/utils";
 
 function formatDateTime(date: Date) {
   return date.toLocaleString("pt-BR", {
+    timeZone: "America/Sao_Paulo",
     day: "2-digit",
     month: "long",
     year: "numeric",
@@ -66,6 +67,7 @@ export default async function StudentDetailPage({
         <p className="mt-1 text-xs text-muted-foreground">
           Membro desde{" "}
           {student.createdAt.toLocaleDateString("pt-BR", {
+            timeZone: "America/Sao_Paulo",
             day: "2-digit",
             month: "long",
             year: "numeric",
