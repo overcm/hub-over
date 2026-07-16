@@ -16,7 +16,7 @@ export function AdminSidebar({ userName }: { userName: string }) {
         { href: "/admin/mentores", label: "Mentores", icon: UserSearch },
         { href: "/admin/mentoria", label: "Marcar mentoria", icon: CalendarPlus },
         { href: "/perfil", label: "Meu perfil", icon: User },
-        { href: "/", label: "Ver área do aluno", icon: ArrowLeftRight, newTab: true },
+        { href: "/inicio", label: "Ver área do aluno", icon: ArrowLeftRight, newTab: true },
       ]}
     />
   );

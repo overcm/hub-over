@@ -22,5 +22,5 @@ export async function loginAction(_prevState: string | undefined, formData: Form
   }
 
   const user = await prisma.user.findUnique({ where: { email }, select: { role: true } });
-  redirect(user?.role === "ADMIN" ? "/admin" : "/");
+  redirect(user?.role === "ADMIN" ? "/admin" : "/inicio");
 }

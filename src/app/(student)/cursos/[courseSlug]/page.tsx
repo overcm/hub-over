@@ -36,7 +36,7 @@ export default async function StudentCoursePage({
   return (
     <div className="space-y-8">
       <div>
-        <BackLink href="/" label="Voltar para meus conteúdos" />
+        <BackLink href="/inicio" label="Voltar para meus conteúdos" />
         <p className="text-xs font-semibold tracking-widest text-primary uppercase">Conteúdo</p>
         <h1 className="mt-1 text-3xl font-semibold tracking-tight">{course.title}</h1>
         <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{course.description}</p>

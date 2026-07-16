@@ -9,7 +9,7 @@ export default auth((req) => {
   const isLoggedIn = !!req.auth;
   const role = req.auth?.user?.role;
 
-  const isPublicRoute = pathname === "/login";
+  const isPublicRoute = pathname === "/" || pathname === "/login";
   const isAdminRoute = pathname.startsWith("/admin");
 
   if (!isLoggedIn && !isPublicRoute) {
@@ -18,12 +18,12 @@ export default auth((req) => {
   }
 
   if (isLoggedIn && isPublicRoute) {
-    const homeUrl = new URL(role === "ADMIN" ? "/admin" : "/", req.nextUrl.origin);
+    const homeUrl = new URL(role === "ADMIN" ? "/admin" : "/inicio", req.nextUrl.origin);
     return NextResponse.redirect(homeUrl);
   }
 
   if (isAdminRoute && role !== "ADMIN") {
-    const homeUrl = new URL("/", req.nextUrl.origin);
+    const homeUrl = new URL("/inicio", req.nextUrl.origin);
     return NextResponse.redirect(homeUrl);
   }
 
@@ -31,5 +31,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|depoimentos).*)"],
 };

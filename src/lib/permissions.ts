@@ -10,7 +10,7 @@ export async function requireUser() {
 
 export async function requireAdmin() {
   const user = await requireUser();
-  if (user.role !== "ADMIN") redirect("/");
+  if (user.role !== "ADMIN") redirect("/inicio");
   return user;
 }
 
@@ -23,7 +23,7 @@ export async function requireEnrollment(courseId: string) {
   });
 
   if (!enrollment || (enrollment.expiresAt && enrollment.expiresAt < new Date())) {
-    redirect("/");
+    redirect("/inicio");
   }
 
   return user;
