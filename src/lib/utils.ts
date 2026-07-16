@@ -1,8 +1,18 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { intervalToDuration, formatDuration as formatDurationFns } from "date-fns"
+import { ptBR } from "date-fns/locale"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+export function formatLoginDuration(start: Date, end: Date) {
+  const totalMs = end.getTime() - start.getTime();
+  if (totalMs < 60_000) return "menos de 1 minuto";
+
+  const duration = intervalToDuration({ start, end });
+  return formatDurationFns(duration, { locale: ptBR, format: ["days", "hours", "minutes"] });
 }
 
 export function formatDuration(totalSeconds: number) {

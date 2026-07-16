@@ -5,6 +5,17 @@ import { Button } from "@/components/ui/button";
 import { BackLink } from "@/components/layout/BackLink";
 import { grantEnrollment, revokeEnrollment, deleteStudent } from "../actions";
 import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
+import { formatLoginDuration } from "@/lib/utils";
+
+function formatDateTime(date: Date) {
+  return date.toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 export default async function StudentDetailPage({
   params,
@@ -60,6 +71,19 @@ export default async function StudentDetailPage({
             year: "numeric",
           })}
         </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Primeiro acesso:{" "}
+          {student.firstLoginAt ? formatDateTime(student.firstLoginAt) : "Ainda não acessou"}
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Último acesso:{" "}
+          {student.lastLoginAt ? formatDateTime(student.lastLoginAt) : "Ainda não acessou"}
+        </p>
+        {student.lastLoginAt && student.lastSeenAt && (
+          <p className="mt-1 text-xs text-muted-foreground">
+            Tempo no último acesso: {formatLoginDuration(student.lastLoginAt, student.lastSeenAt)}
+          </p>
+        )}
       </div>
 
       <Card>
