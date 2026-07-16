@@ -6,12 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export const metadata: Metadata = {
-  title: "Hub Over — Mentorias e conteúdos para acelerar resultados",
+  title: "Hub Over — Gestão e escala para donos de restaurante",
   description:
-    "Aulas gravadas, mentorias ao vivo, materiais e uma comunidade de networking em um só lugar. Fale com a gente no WhatsApp.",
+    "Aulas gravadas, mentorias ao vivo com quem fatura R$30mi+/ano, materiais e uma comunidade de donos de restaurante construindo escala com previsibilidade. Fale com a gente no WhatsApp.",
 };
 
 const WHATSAPP_URL = "https://wa.link/nw0115";
+
+const STATS = [
+  { value: "R$ 25Mi+", label: "faturados em 2025 pelos clientes da Over" },
+  { value: "150+", label: "negócios atendidos" },
+  { value: "1Mi+", label: "pedidos gerados" },
+];
 
 const BENEFITS = [
   {
@@ -22,17 +28,34 @@ const BENEFITS = [
   {
     icon: Users,
     title: "Mentorias e networking",
-    description: "Encontros ao vivo com o grupo e troca direta com quem já está na estrada.",
+    description: "Encontros ao vivo com quem já fatura R$30mi+/ano e troca direta com o grupo.",
   },
   {
     icon: FileText,
     title: "Materiais de apoio",
-    description: "Modelos, planilhas e resumos pra aplicar o que você aprende no mesmo dia.",
+    description: "Planilhas de precificação, CMV e modelos pra aplicar no seu negócio no mesmo dia.",
   },
   {
     icon: LineChart,
     title: "Acompanhamento",
     description: "Seu progresso registrado por aula, pra você ver a evolução de verdade.",
+  },
+];
+
+const MENTORS = [
+  {
+    name: "Felipe Lohmann",
+    result: "8 restaurantes · faturamento de R$ 30mi/ano",
+    topics: ["Gestão de pessoas", "Gestão financeira e CMV", "Gestão de processos", "Multilojas e sócios"],
+  },
+  {
+    name: "Rodrigo — Grupo Saudoso",
+    result: "5 restaurantes · faturamento de R$ 35mi/ano",
+    topics: [
+      "Negociação com fornecedores",
+      "Negociação de taxa de maquininha",
+      "Captação de investimento com banco",
+    ],
   },
 ];
 
@@ -63,8 +86,8 @@ export default function LandingPage() {
     <div className="flex min-h-full flex-col">
       <header className="border-b border-white/10 bg-black">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-          <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-primary" />
+          <div className="flex items-center gap-2.5">
+            <Image src="/logo-over.png" alt="Over" width={28} height={22} className="invert" />
             <span className="text-sm font-semibold tracking-[0.25em] text-white uppercase">
               Hub <span className="text-primary">Over</span>
             </span>
@@ -81,12 +104,16 @@ export default function LandingPage() {
       <section className="relative overflow-hidden bg-black text-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(199,40,37,0.35),_transparent_55%)]" />
         <div className="relative mx-auto flex max-w-6xl flex-col items-start px-6 py-24 sm:py-32">
-          <h1 className="max-w-2xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
-            Sua área de conhecimento, feita para acelerar resultados.
+          <p className="text-xs font-semibold tracking-[0.25em] text-primary uppercase">
+            Para donos e gestores de restaurante
+          </p>
+          <h1 className="mt-3 max-w-2xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
+            Pare de girar dinheiro. Aprenda a estruturar seu restaurante para escalar com
+            previsibilidade.
           </h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-white/70 sm:text-lg">
-            Aulas gravadas, mentorias, materiais e acompanhamento em um só lugar — e um grupo de
-            gente que está construindo resultado igual você.
+            Aulas gravadas, mentorias ao vivo com quem já fatura R$30mi+/ano, materiais práticos e
+            uma comunidade de donos construindo o mesmo resultado que você.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Button
@@ -99,26 +126,84 @@ export default function LandingPage() {
                 </a>
               }
             />
-            <Button
-              size="lg"
-              variant="ghost"
-              nativeButton={false}
-              className="h-12 px-6 text-base text-white hover:bg-white/10 hover:text-white"
-              render={<Link href="/login">Já sou aluno → Entrar</Link>}
-            />
+          </div>
+        </div>
+
+        <div className="relative border-t border-white/10">
+          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-6 py-10 sm:grid-cols-3">
+            {STATS.map((stat) => (
+              <div key={stat.label} className="text-center sm:text-left">
+                <p className="text-3xl font-semibold tracking-tight text-primary sm:text-4xl">
+                  {stat.value}
+                </p>
+                <p className="mt-1 text-sm text-white/60">{stat.label}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-6 py-20">
-        <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">O que tem dentro do Hub</h2>
-        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {BENEFITS.map(({ icon: Icon, title, description }) => (
-            <Card key={title}>
-              <CardContent className="space-y-3">
-                <Icon size={28} className="text-primary" />
-                <h3 className="font-semibold tracking-tight">{title}</h3>
-                <p className="text-sm text-muted-foreground">{description}</p>
+        <p className="text-xs font-semibold tracking-widest text-primary uppercase">Sobre a Over</p>
+        <h2 className="mt-2 max-w-3xl text-2xl font-semibold tracking-tight sm:text-3xl">
+          Uma assessoria estratégica especializada em food service — agora em formato de mentoria.
+        </h2>
+        <div className="mt-6 max-w-3xl space-y-4 text-base leading-relaxed text-muted-foreground">
+          <p>
+            A Over trabalha com donos e gestores de restaurante que querem estruturar e escalar o
+            negócio — não só apagar incêndio, mas construir uma operação que funciona com
+            previsibilidade.
+          </p>
+          <p>
+            Na prática, isso significa gestão comercial, financeira e operacional: CRM, análise do
+            time de vendas, tráfego pago, conteúdo, controle de margem e lucratividade — tudo
+            integrado, não serviços soltos.
+          </p>
+          <p>
+            O Hub Over nasce dessa mesma base: o mesmo método que a Over aplica na assessoria,
+            agora em aulas, mentorias ao vivo e uma comunidade — pra você aplicar no seu ritmo.
+          </p>
+        </div>
+      </section>
+
+      <section className="bg-muted/40 py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">O que tem dentro do Hub</h2>
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {BENEFITS.map(({ icon: Icon, title, description }) => (
+              <Card key={title}>
+                <CardContent className="space-y-3">
+                  <Icon size={28} className="text-primary" />
+                  <h3 className="font-semibold tracking-tight">{title}</h3>
+                  <p className="text-sm text-muted-foreground">{description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-6 py-20">
+        <p className="text-xs font-semibold tracking-widest text-primary uppercase">Mentores</p>
+        <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+          Aprenda com quem faz — não com quem só ensina
+        </h2>
+        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {MENTORS.map((mentor) => (
+            <Card key={mentor.name}>
+              <CardContent className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold tracking-tight">{mentor.name}</h3>
+                  <p className="text-sm font-medium text-primary">{mentor.result}</p>
+                </div>
+                <ul className="space-y-1.5 text-sm text-muted-foreground">
+                  {mentor.topics.map((topic) => (
+                    <li key={topic} className="flex items-start gap-2">
+                      <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-primary" />
+                      {topic}
+                    </li>
+                  ))}
+                </ul>
               </CardContent>
             </Card>
           ))}
@@ -149,41 +234,37 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-6 py-20">
+      <section className="mx-auto w-full max-w-2xl px-6 py-20">
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Como entrar</h2>
-        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="mt-10 flex flex-col gap-6">
           {PLANS.map((plan) => (
             <Card key={plan.name}>
-              <CardContent className="space-y-4 py-4">
+              <CardContent className="space-y-2 py-4">
                 <h3 className="text-sm font-semibold tracking-widest text-primary uppercase">
                   {plan.name}
                 </h3>
                 <p className="text-4xl font-semibold tracking-tight">{plan.price}</p>
                 <p className="text-sm text-muted-foreground">{plan.installment}</p>
-                <Button
-                  className="mt-2 w-full"
-                  nativeButton={false}
-                  render={
-                    <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
-                      Falar no WhatsApp
-                    </a>
-                  }
-                />
               </CardContent>
             </Card>
           ))}
         </div>
+        <Button
+          size="lg"
+          className="mt-8 h-12 w-full text-base"
+          nativeButton={false}
+          render={
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
+              Falar no WhatsApp
+            </a>
+          }
+        />
       </section>
 
       <footer className="border-t border-border bg-black py-10 text-white/60">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-6 text-center sm:flex-row sm:justify-between sm:text-left">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 px-6 text-center">
+          <Image src="/logo-over.png" alt="Over" width={20} height={16} className="invert opacity-60" />
           <p className="text-xs">© {new Date().getFullYear()} Hub Over</p>
-          <Button
-            variant="ghost"
-            nativeButton={false}
-            className="h-9 text-white hover:bg-white/10 hover:text-white"
-            render={<Link href="/login">Já sou aluno</Link>}
-          />
         </div>
       </footer>
     </div>
