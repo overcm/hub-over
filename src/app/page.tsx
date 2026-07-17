@@ -39,7 +39,8 @@ const BENEFITS = [
   {
     icon: Sparkles,
     title: "IA aplicada à gestão",
-    description: "Como usar IA no dia a dia do restaurante: precificação, escala e atendimento.",
+    description:
+      "Como usar IA no dia a dia do restaurante: precificação, escala, atendimento, sistemas, automações e processos.",
   },
   {
     icon: LineChart,
@@ -170,14 +171,16 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="bg-muted/40 py-20">
+      <section className="bg-primary/5 py-20">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">O que tem dentro do Hub</h2>
           <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {BENEFITS.map(({ icon: Icon, title, description }) => (
-              <Card key={title}>
+              <Card key={title} className="border-t-2 border-t-primary">
                 <CardContent className="space-y-3">
-                  <Icon size={28} className="text-primary" />
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10">
+                    <Icon size={22} className="text-primary" />
+                  </div>
                   <h3 className="font-semibold tracking-tight">{title}</h3>
                   <p className="text-sm text-muted-foreground">{description}</p>
                 </CardContent>
@@ -187,20 +190,18 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-6 py-20">
-        <p className="text-xs font-semibold tracking-widest text-primary uppercase">Mentores</p>
-        <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-          Aprenda com quem faz, não com quem só ensina
-        </h2>
-        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {MENTORS.map((mentor) => (
-            <Card key={mentor.name}>
-              <CardContent className="space-y-4">
-                <div>
-                  <h3 className="text-lg font-semibold tracking-tight">{mentor.name}</h3>
-                  <p className="text-sm font-medium text-primary">{mentor.result}</p>
-                </div>
-                <ul className="space-y-1.5 text-sm text-muted-foreground">
+      <section className="bg-black py-20 text-white">
+        <div className="mx-auto max-w-6xl px-6">
+          <p className="text-xs font-semibold tracking-widest text-primary uppercase">Mentores</p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+            Aprenda com quem faz, não com quem só ensina
+          </h2>
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
+            {MENTORS.map((mentor) => (
+              <div key={mentor.name} className="rounded-xl bg-white/5 p-6 ring-1 ring-white/10">
+                <h3 className="text-lg font-semibold tracking-tight">{mentor.name}</h3>
+                <p className="mt-1 text-sm font-medium text-primary">{mentor.result}</p>
+                <ul className="mt-4 space-y-1.5 text-sm text-white/70">
                   {mentor.topics.map((topic) => (
                     <li key={topic} className="flex items-start gap-2">
                       <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-primary" />
@@ -208,9 +209,9 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-              </CardContent>
-            </Card>
-          ))}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -235,31 +236,32 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-2xl px-6 py-20">
-        <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Como entrar</h2>
-        <p className="mt-3 text-muted-foreground">O Hub Over é pra quem se encaixa nisso:</p>
-        <Card className="mt-6">
-          <CardContent>
+      <section className="relative overflow-hidden bg-black py-20 text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,_rgba(199,40,37,0.3),_transparent_55%)]" />
+        <div className="relative mx-auto w-full max-w-2xl px-6">
+          <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Como entrar</h2>
+          <p className="mt-3 text-white/70">O Hub Over é pra quem se encaixa nisso:</p>
+          <div className="mt-6 rounded-xl bg-white/5 p-6 ring-1 ring-white/10">
             <ul className="space-y-3 text-sm">
               {CRITERIA.map((criterion) => (
                 <li key={criterion} className="flex items-start gap-3">
                   <Check size={18} className="mt-0.5 shrink-0 text-primary" />
-                  <span>{criterion}</span>
+                  <span className="text-white/90">{criterion}</span>
                 </li>
               ))}
             </ul>
-          </CardContent>
-        </Card>
-        <Button
-          size="lg"
-          className="mt-8 h-12 w-full text-base"
-          nativeButton={false}
-          render={
-            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
-              {CTA_LABEL}
-            </a>
-          }
-        />
+          </div>
+          <Button
+            size="lg"
+            className="mt-8 h-12 w-full text-base"
+            nativeButton={false}
+            render={
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
+                {CTA_LABEL}
+              </a>
+            }
+          />
+        </div>
       </section>
 
       <footer className="border-t border-border bg-black py-10 text-white/60">
