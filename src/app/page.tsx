@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { PlayCircle, Users, FileText, LineChart } from "lucide-react";
+import { PlayCircle, Users, FileText, LineChart, Sparkles, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export const metadata: Metadata = {
-  title: "Hub Over — Gestão e escala para donos de restaurante",
+  title: "Hub Over | Gestão e escala para donos de restaurante",
   description:
     "Aulas gravadas, mentorias ao vivo com quem fatura R$30mi+/ano, materiais e uma comunidade de donos de restaurante construindo escala com previsibilidade. Fale com a gente no WhatsApp.",
 };
 
 const WHATSAPP_URL = "https://wa.link/nw0115";
+const CTA_LABEL = "Quero fazer parte";
 
 const STATS = [
   { value: "R$ 25Mi+", label: "faturados em 2025 pelos clientes da Over" },
@@ -36,6 +37,11 @@ const BENEFITS = [
     description: "Planilhas de precificação, CMV e modelos pra aplicar no seu negócio no mesmo dia.",
   },
   {
+    icon: Sparkles,
+    title: "IA aplicada à gestão",
+    description: "Como usar IA no dia a dia do restaurante: precificação, escala e atendimento.",
+  },
+  {
     icon: LineChart,
     title: "Acompanhamento",
     description: "Seu progresso registrado por aula, pra você ver a evolução de verdade.",
@@ -44,12 +50,12 @@ const BENEFITS = [
 
 const MENTORS = [
   {
-    name: "Felipe Lohmann",
+    name: "Felipe Lohmann · Multifranqueado Quiero Café e Pop Poke",
     result: "8 restaurantes · faturamento de R$ 30mi/ano",
     topics: ["Gestão de pessoas", "Gestão financeira e CMV", "Gestão de processos", "Multilojas e sócios"],
   },
   {
-    name: "Rodrigo — Grupo Saudoso",
+    name: "Rodrigo · Grupo Saudoso",
     result: "5 restaurantes · faturamento de R$ 35mi/ano",
     topics: [
       "Negociação com fornecedores",
@@ -59,26 +65,23 @@ const MENTORS = [
   },
 ];
 
-const TESTIMONIAL_IMAGES = [
-  "depoimento-6.jpeg",
-  "depoimento-2.jpeg",
-  "depoimento-1.jpeg",
-  "depoimento-3.jpeg",
-  "depoimento-4.jpeg",
-  "depoimento-5.jpeg",
+const TESTIMONIALS = [
+  { file: "depoimento-6.jpeg", width: 1179, height: 320 },
+  { file: "depoimento-2.jpeg", width: 1179, height: 792 },
+  { file: "depoimento-1.jpeg", width: 1179, height: 516 },
+  { file: "depoimento-3.jpeg", width: 1088, height: 1280 },
+  { file: "depoimento-4.jpeg", width: 1179, height: 258 },
+  { file: "depoimento-5.jpeg", width: 1179, height: 329 },
 ];
 
-const PLANS = [
-  {
-    name: "Semestral",
-    price: "R$ 2.400",
-    installment: "ou em até 12x sem juros",
-  },
-  {
-    name: "Anual",
-    price: "R$ 4.000",
-    installment: "ou em até 12x sem juros",
-  },
+const CRITERIA = [
+  "Donos e gestores que querem crescer com previsibilidade, não no improviso.",
+  "Vontade de sair do operacional braçal e assumir a visão de dono do negócio.",
+  "Disposição pra ajudar e ser ajudado dentro do grupo.",
+  "Humildade nas trocas entre os membros.",
+  "Ambição em aprender cada dia mais.",
+  "Comprometimento com os encontros ao vivo e com a aplicação prática do conteúdo.",
+  "Abertura pra expor números e desafios reais do negócio no grupo.",
 ];
 
 export default function LandingPage() {
@@ -122,7 +125,7 @@ export default function LandingPage() {
               className="h-12 px-6 text-base"
               render={
                 <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
-                  Falar no WhatsApp
+                  {CTA_LABEL}
                 </a>
               }
             />
@@ -146,22 +149,23 @@ export default function LandingPage() {
       <section className="mx-auto w-full max-w-6xl px-6 py-20">
         <p className="text-xs font-semibold tracking-widest text-primary uppercase">Sobre a Over</p>
         <h2 className="mt-2 max-w-3xl text-2xl font-semibold tracking-tight sm:text-3xl">
-          Uma assessoria estratégica especializada em food service — agora em formato de mentoria.
+          Uma assessoria estratégica especializada em food service, agora em formato de mentoria.
         </h2>
         <div className="mt-6 max-w-3xl space-y-4 text-base leading-relaxed text-muted-foreground">
           <p>
             A Over trabalha com donos e gestores de restaurante que querem estruturar e escalar o
-            negócio — não só apagar incêndio, mas construir uma operação que funciona com
+            negócio, não só apagar incêndio, mas construir uma operação que funciona com
             previsibilidade.
           </p>
           <p>
-            Na prática, isso significa gestão comercial, financeira e operacional: CRM, análise do
-            time de vendas, tráfego pago, conteúdo, controle de margem e lucratividade — tudo
-            integrado, não serviços soltos.
+            Na prática, isso significa gestão de pessoas, financeira e operacional: CRM,
+            treinamento de equipe, desenvolvimento de metas, tráfego pago, conteúdo, controle de
+            margem e lucratividade, tudo integrado, não serviços soltos. Incluindo o uso de IA para
+            automatizar decisões de gestão no dia a dia do restaurante.
           </p>
           <p>
             O Hub Over nasce dessa mesma base: o mesmo método que a Over aplica na assessoria,
-            agora em aulas, mentorias ao vivo e uma comunidade — pra você aplicar no seu ritmo.
+            agora em aulas, mentorias ao vivo e uma comunidade, pra você aplicar no seu ritmo.
           </p>
         </div>
       </section>
@@ -169,7 +173,7 @@ export default function LandingPage() {
       <section className="bg-muted/40 py-20">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">O que tem dentro do Hub</h2>
-          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {BENEFITS.map(({ icon: Icon, title, description }) => (
               <Card key={title}>
                 <CardContent className="space-y-3">
@@ -186,7 +190,7 @@ export default function LandingPage() {
       <section className="mx-auto w-full max-w-6xl px-6 py-20">
         <p className="text-xs font-semibold tracking-widest text-primary uppercase">Mentores</p>
         <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-          Aprenda com quem faz — não com quem só ensina
+          Aprenda com quem faz, não com quem só ensina
         </h2>
         <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
           {MENTORS.map((mentor) => (
@@ -215,17 +219,14 @@ export default function LandingPage() {
           <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
             Quem já está dentro, fala melhor que a gente
           </h2>
-          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {TESTIMONIAL_IMAGES.map((file) => (
-              <div
-                key={file}
-                className="overflow-hidden rounded-xl bg-black ring-1 ring-foreground/10"
-              >
+          <div className="mt-10 columns-1 gap-6 sm:columns-2 lg:columns-3">
+            {TESTIMONIALS.map((testimonial) => (
+              <div key={testimonial.file} className="mb-6 break-inside-avoid overflow-hidden rounded-xl ring-1 ring-foreground/10">
                 <Image
-                  src={`/depoimentos/${file}`}
+                  src={`/depoimentos/${testimonial.file}`}
                   alt="Depoimento de aluno do Hub Over no WhatsApp"
-                  width={800}
-                  height={500}
+                  width={testimonial.width}
+                  height={testimonial.height}
                   className="h-auto w-full"
                 />
               </div>
@@ -236,26 +237,26 @@ export default function LandingPage() {
 
       <section className="mx-auto w-full max-w-2xl px-6 py-20">
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Como entrar</h2>
-        <div className="mt-10 flex flex-col gap-6">
-          {PLANS.map((plan) => (
-            <Card key={plan.name}>
-              <CardContent className="space-y-2 py-4">
-                <h3 className="text-sm font-semibold tracking-widest text-primary uppercase">
-                  {plan.name}
-                </h3>
-                <p className="text-4xl font-semibold tracking-tight">{plan.price}</p>
-                <p className="text-sm text-muted-foreground">{plan.installment}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <p className="mt-3 text-muted-foreground">O Hub Over é pra quem se encaixa nisso:</p>
+        <Card className="mt-6">
+          <CardContent>
+            <ul className="space-y-3 text-sm">
+              {CRITERIA.map((criterion) => (
+                <li key={criterion} className="flex items-start gap-3">
+                  <Check size={18} className="mt-0.5 shrink-0 text-primary" />
+                  <span>{criterion}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
         <Button
           size="lg"
           className="mt-8 h-12 w-full text-base"
           nativeButton={false}
           render={
             <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
-              Falar no WhatsApp
+              {CTA_LABEL}
             </a>
           }
         />
