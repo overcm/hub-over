@@ -15,6 +15,16 @@ export function formatLoginDuration(start: Date, end: Date) {
   return formatDurationFns(duration, { locale: ptBR, format: ["days", "hours", "minutes"] });
 }
 
+export function formatDurationSeconds(totalSeconds: number) {
+  if (totalSeconds < 60) return "menos de 1 minuto";
+
+  const duration = {
+    hours: Math.floor(totalSeconds / 3600),
+    minutes: Math.floor((totalSeconds % 3600) / 60),
+  };
+  return formatDurationFns(duration, { locale: ptBR, format: ["hours", "minutes"] });
+}
+
 export function formatDuration(totalSeconds: number) {
   if (!Number.isFinite(totalSeconds)) return "0:00";
   const h = Math.floor(totalSeconds / 3600);

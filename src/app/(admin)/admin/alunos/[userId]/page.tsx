@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { BackLink } from "@/components/layout/BackLink";
 import { grantEnrollment, revokeEnrollment, deleteStudent } from "../actions";
 import { ConfirmSubmitButton } from "@/components/admin/ConfirmSubmitButton";
-import { formatLoginDuration } from "@/lib/utils";
+import { formatLoginDuration, formatDurationSeconds } from "@/lib/utils";
 
 function formatDateTime(date: Date) {
   return date.toLocaleString("pt-BR", {
@@ -58,6 +58,12 @@ export default async function StudentDetailPage({
   });
   const completedSet = new Set(completedRows.map((r) => r.lessonId));
 
+  const watchedSecondsResult = await prisma.lessonProgress.aggregate({
+    where: { userId },
+    _sum: { watchedSeconds: true },
+  });
+  const totalWatchedSeconds = watchedSecondsResult._sum.watchedSeconds ?? 0;
+
   return (
     <div className="max-w-2xl space-y-6">
       <BackLink href="/admin/alunos" label="Voltar para alunos" />
@@ -86,6 +92,12 @@ export default async function StudentDetailPage({
             Tempo no último acesso: {formatLoginDuration(student.lastLoginAt, student.lastSeenAt)}
           </p>
         )}
+        <p className="mt-1 text-xs text-muted-foreground">
+          Tempo total na plataforma: {formatDurationSeconds(student.totalActiveSeconds)}
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Tempo de aulas assistidas: {formatDurationSeconds(totalWatchedSeconds)}
+        </p>
       </div>
 
       <Card>
