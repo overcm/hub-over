@@ -1,12 +1,29 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-export default async function AdminStudentsPage() {
+export default async function AdminStudentsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q } = await searchParams;
+
   const students = await prisma.user.findMany({
-    where: { role: "STUDENT" },
-    orderBy: { createdAt: "desc" },
+    where: {
+      role: "STUDENT",
+      ...(q
+        ? {
+            OR: [
+              { name: { contains: q, mode: "insensitive" } },
+              { email: { contains: q, mode: "insensitive" } },
+            ],
+          }
+        : {}),
+    },
+    orderBy: { name: "asc" },
     include: {
       enrollments: {
         include: {
@@ -57,9 +74,19 @@ export default async function AdminStudentsPage() {
         />
       </div>
 
+      <form className="relative mb-4">
+        <Search
+          size={16}
+          className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
+        />
+        <Input name="q" defaultValue={q ?? ""} placeholder="Buscar por nome ou e-mail..." className="pl-9" />
+      </form>
+
       <div className="overflow-hidden rounded-xl border border-border">
         {students.length === 0 ? (
-          <p className="p-5 text-sm text-muted-foreground">Nenhum aluno cadastrado ainda.</p>
+          <p className="p-5 text-sm text-muted-foreground">
+            {q ? "Nenhum aluno encontrado." : "Nenhum aluno cadastrado ainda."}
+          </p>
         ) : (
           <div className="divide-y divide-border">
             {students.map((student) => {
